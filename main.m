@@ -1,4 +1,4 @@
-%% Inicializations
+%% Initalizations
 
 % Constant
 g = 9.8; % Gravity acelleration in m/s
@@ -8,9 +8,9 @@ h = 1000;    % m
 M = 0.20;
 aa0 = 7.23 * pi /180; % rad
 gg0 = 8 * pi /180;    % rad
-u0 = 130.7 ; % km/h
+u0 = 130.7 * 0.514444; % km/h
 flaps = 20 * pi /180;  % rad
-theta0 = 0; % ASSUMPTION
+tt0 = 0; % ASSUMPTION
 w0 = 0; % ASSUMPTION
 
 % Equilibrium Inputs
@@ -50,7 +50,7 @@ xdt = 4.088;
 ybb = -0.0416;
 yp  = 0;
 yr  = 0;
-Ydr = -0.013;
+ydr = -0.013;
 
 zu  = -0.2917;
 zw  = -0.6220;
@@ -72,23 +72,23 @@ mdt = 0.036;
 lbb = -0.1211; 
 lp  = -0.5594;
 lr  = 0.0586;
-Lda = -0.484;
-Ldr = -0.024;
+lda = -0.484;
+ldr = -0.024;
 
 nbb = 0.2642;
 np  = -0.0028;
 nr  = -0.1134;
-Nda = 0;
-Ndr = -0.145;
+nda = 0;
+ndr = -0.145;
 
 % Computations
 % Underscore represents the character '
 
-% l_v = lv + (Ixz/Ix)*nv 
+l_bb = lbb + (Ixz/Ix)*nbb;
 l_p = lp + (Ixz/Ix) * np;
 l_r = lr + (Ixz/Ix) * nr; 
 
-% n_v = nv + (Ixz/Iz) * lv;
+n_bb = nbb + (Ixz/Iz) * lbb;
 n_p = np + (Ixz/Iz) * lp;
 n_r = nr + (Ixz/Iz) * lr;
 
@@ -98,28 +98,29 @@ n_r = nr + (Ixz/Iz) * lr;
 A = zeros([5,5]);
 
 % Line 1
-% A(1,1) = yv
-A(1,2) = yp + w0;
-A(1,3) = yr - u0;
-A(1,4) = g * cos(theta0);
+A(1,1) = ybb;
+A(1,2) = (yp + w0)/u0;
+A(1,3) = (yr - u0)/u0;
+A(1,4) = (g * cos(tt0))/u0;
 
 % Line 2
-% A(2,1) = l_v;
+A(2,1) = l_bb;
 A(2,2) = l_p;
 A(2,3) = l_r;
 
 % Line 3
-% A(3,1) = l_v;
+A(3,1) = n_bb;
 A(3,2) = n_p;
 A(3,3) = n_r;
 
 % Line 4
 A(4,2) = 1;
-A(4,3) = tan(theta0);
+A(4,3) = tan(tt0);
 
 % Line 5 
-A(5,3) = 1/cos(theta0);
+A(5,3) = 1/cos(tt0);
 
-
+% Compute the poles, damping coefficients, frequencies, and time constants
+damp(A)
 
  
