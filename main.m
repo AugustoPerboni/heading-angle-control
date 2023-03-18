@@ -1,4 +1,5 @@
-%% Initalizations
+%% RP1
+% Initalizations
 
 % Constant
 g = 9.8; % Gravity acelleration in m/s
@@ -77,5 +78,26 @@ B = [yda ydr;
 
 % Compute the poles, damping coefficients, frequencies, and time constants
 damp(A)
+
+%% Ponto 2
+% Realimentação da razão de guinada para o rudder para establiziação do RH
+rlocus(A, B(:,2),-[0 0 1 0], 0)
+% k1 = rlocfind(A, B(:,2),-[0 0 1 0], 0)
+k1 = 3.60;
+A1 =  A + B(:,2)*[0 0 k1 0];
+damp(A1)
+
+% Falta estabilizar o rolamento puro
+%% 
+% Realimentação dos ailerons para a razão de rolamento para estabilizar o
+% rolamento
+rlocus(A1, B(:,1),-[0 1 0 0], 0)
+% k2 = rlocfind(A1, B(:,1),-[0 1 0 0], 0)
+k2 = 0.3377;
+A_AF = A1 + B(:,1) * [0 k2 0 0];
+damp(A_AF)
+
+
+
 
  
