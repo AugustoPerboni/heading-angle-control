@@ -161,25 +161,34 @@ pmax = 0.025;
 rmax = 0.01;
 psimax = deg2rad(60);
 
-R = 0.3*diag([1/(damax*0.1)^2 2*1/(drmax*0.1)^2]); % 10% do max 
-Q = diag([5*1/bbmax^2 0.23*1/pmax^2 1/rmax^2 5*1/phimax^2 20*1/psimax^2]);
+
+% Sem estados integrativos
+% R = 0.3*diag([1/(damax*0.1)^2 2*1/(drmax*0.1)^2]); % 10% do max 
+% Q = diag([5*1/bbmax^2 0.23*1/pmax^2 1/rmax^2 5*1/phimax^2 20*1/psimax^2]);
+% Klqr = lqr(A_int,B_int,Q,R);
+% A_AF_int = A_int - B_int*Klqr;
+% sys_lqr = ss(A_AF_int, B_int, C_int, D_int);
+% k_sys_lqr = dcgain(sys_lqr);
+% prek_sys_lqr = pinv([k_sys_lqr(1,1), k_sys_lqr(1,2);k_sys_lqr(5,1), k_sys_lqr(5,2)]);
+% damp(A_AF);
 
 
-Klqr = lqr(A_int,B_int,Q,R);
-A_AF_int = A_int - B_int*Klqr;
+% Adicionando estados integrativos
+Ai = [A_int zeros(5,2); 1 0 0 0 0 0 0; 0 0 0 0 1 0 0];
+Bi = [B_int; 0 0; 0 0];
+Ci = eye(7);
+Di = zeros(7,2);
 
-sys_lqr = ss(A_AF_int, B_int, C_int, D_int);
-k_sys_lqr = dcgain(sys_lqr);
-prek_sys_lqr = pinv([k_sys_lqr(1,1), k_sys_lqr(1,2);k_sys_lqr(5,1), k_sys_lqr(5,2)]);
-damp(A_AF);
+% xm2= [bbmax pmax rmax phimax lambdamax];
+xm2= [1 4 4 10 50 1 1];
+um2 = [damax drmax];       
+Qi = diag(xm2);%.^(-2)
+Ri = diag(um2.^(-2));
+Klqri = lqr(Ai, Bi, Qi, Ri);
+Ai_AF = Ai - Bi * Klqri;
+damp(Ai_AF)
 
 
-% klqr_int = lqr(A_int,B_int,Q2,R2)
-% AF_int = A_int - B_int*klqr_int;
-% damp(AF_int);
-% sys_lqr=ss(AF_int, B_int, C_int, D_int);
-% k_sys_lqr=dcgain(sys_lqr)
-% prek_sys_lqr=pinv([k_sys_lqr(5,1) k_sys_lqr(5,2)])
 
 
 
