@@ -161,7 +161,6 @@ pmax = 0.025;
 rmax = 0.01;
 psimax = deg2rad(60);
 
-
 % Sem estados integrativos
 % R = 0.3*diag([1/(damax*0.1)^2 2*1/(drmax*0.1)^2]); % 10% do max 
 % Q = diag([5*1/bbmax^2 0.23*1/pmax^2 1/rmax^2 5*1/phimax^2 20*1/psimax^2]);
@@ -180,7 +179,7 @@ Ci = eye(7);
 Di = zeros(7,2);
 
 % xm2= [bbmax pmax rmax phimax lambdamax];
-xm2= [1 4 4 10 50 1 1];
+xm2= [1 4 4 10 50 0.1 1];
 um2 = [damax drmax];       
 Qi = diag(xm2);%.^(-2)
 Ri = diag(um2.^(-2));
