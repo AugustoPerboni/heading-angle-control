@@ -189,6 +189,25 @@ damp(Ai_AF)
 
 
 
+%% Ponto 4
+% Noise betha
+
+RMS_betha = (deg2rad(25) * 2.5) * (5/1000);
+noise_power_betha = (RMS_betha^2)/ (2 * pi / 100);
+
+RMS_ang_vel = (deg2rad(50) * 3) * (2.5/1000);
+noise_power_ang_vel = RMS_ang_vel^2 / (40);
+
+noise_power_rol = deg2rad(0.2)^2/40;
+
+noise_power_yaw = deg2rad(1.75)^2/40;
+
+
+
+
+
+
+
 
 
 
