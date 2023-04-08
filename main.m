@@ -161,7 +161,7 @@ pmax = 0.025;
 rmax = 0.01;
 psimax = deg2rad(60);
 
-% Sem estados integrativos
+% % Sem estados integrativos
 % R = 0.3*diag([1/(damax*0.1)^2 2*1/(drmax*0.1)^2]); % 10% do max 
 % Q = diag([5*1/bbmax^2 0.23*1/pmax^2 1/rmax^2 5*1/phimax^2 20*1/psimax^2]);
 % Klqr = lqr(A_int,B_int,Q,R);
@@ -169,13 +169,13 @@ psimax = deg2rad(60);
 % sys_lqr = ss(A_AF_int, B_int, C_int, D_int);
 % k_sys_lqr = dcgain(sys_lqr);
 % prek_sys_lqr = pinv([k_sys_lqr(1,1), k_sys_lqr(1,2);k_sys_lqr(5,1), k_sys_lqr(5,2)]);
-% damp(A_AF);
+% damp(A_AF_int);
 
 
 % Adicionando estados integrativos
 Ai = [A_int zeros(5,2); 1 0 0 0 0 0 0; 0 0 0 0 1 0 0];
 Bi = [B_int; 0 0; 0 0];
-Ci = eye(7);
+Ci = eye(7); 
 Di = zeros(7,2);
 
 % xm2= [bbmax pmax rmax phimax lambdamax];
@@ -186,6 +186,73 @@ Ri = diag(um2.^(-2));
 Klqri = lqr(Ai, Bi, Qi, Ri);
 Ai_AF = Ai - Bi * Klqri;
 damp(Ai_AF)
+
+% Plot dos resultados
+simOut = sim("sim3.slx");
+
+% Extrair valores
+simOutTime = simOut.simout.time;
+simOutValue = simOut.simout.signals.values;
+
+figure
+% Plot 1
+subplot(6,1,1)
+plot(simOutTime,rad2deg(simOutValue(:,1)),'LineWidth',1.5);
+title('β')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,1))) - 5, max(rad2deg(simOutValue(:,1))) + 5])
+
+% Plot 2
+subplot(6,1,2)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,2)),'LineWidth',1.5);
+title('p')
+xlabel('Tempo [s]')
+ylabel('Vel angular [º/s]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,2))) - 5, max(rad2deg(simOutValue(:,2))) + 5])
+
+% Plot 3
+subplot(6,1,3)
+set(gca,'linewidth',10)
+plot(simOutTime,rad2deg(simOutValue(:,3)),'LineWidth',1.5);
+title('r')
+xlabel('Tempo [s]')
+ylabel('Vel angular [º/s]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,3))) - 5, max(rad2deg(simOutValue(:,3))) + 5])
+
+% Plot 4
+subplot(6,1,4)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,4)),'LineWidth',1.5);
+title('Φ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,4))) - 5, max(rad2deg(simOutValue(:,4))) + 5])
+
+% Plot 5
+subplot(6,1,5)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,5)),'LineWidth',1.5);
+title('Ψ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,5))) - 5, max(rad2deg(simOutValue(:,5))) + 5])
+
+% Plot 6
+subplot(6,1,6)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,1) + simOutValue(:,5)),'LineWidth',1.5, 'color','r');
+title('λ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,1) + simOutValue(:,5))) - 5, max(rad2deg(simOutValue(:,1) + simOutValue(:,5))) + 5])
 
 
 
@@ -203,6 +270,72 @@ noise_power_rol = deg2rad(0.2)^2/40;
 noise_power_yaw = deg2rad(1.75)^2/40;
 
 
+% Plot dos resultados
+simOut = sim("sim4.slx");
+
+% Extrair valores
+simOutTime = simOut.simout.time;
+simOutValue = simOut.simout.signals.values;
+
+figure
+% Plot 1
+subplot(6,1,1)
+plot(simOutTime,rad2deg(simOutValue(:,1)),'LineWidth',1.5);
+title('β')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,1))) - 5, max(rad2deg(simOutValue(:,1))) + 5])
+
+% Plot 2
+subplot(6,1,2)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,2)),'LineWidth',1.5);
+title('p')
+xlabel('Tempo [s]')
+ylabel('Vel angular [º/s]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,2))) - 5, max(rad2deg(simOutValue(:,2))) + 5])
+
+% Plot 3
+subplot(6,1,3)
+set(gca,'linewidth',10)
+plot(simOutTime,rad2deg(simOutValue(:,3)),'LineWidth',1.5);
+title('r')
+xlabel('Tempo [s]')
+ylabel('Vel angular [º/s]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,3))) - 5, max(rad2deg(simOutValue(:,3))) + 5])
+
+% Plot 4
+subplot(6,1,4)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,4)),'LineWidth',1.5);
+title('Φ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,4))) - 5, max(rad2deg(simOutValue(:,4))) + 5])
+
+% Plot 5
+subplot(6,1,5)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,5)),'LineWidth',1.5);
+title('Ψ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,5))) - 5, max(rad2deg(simOutValue(:,5))) + 5])
+
+% Plot 6
+subplot(6,1,6)
+set(gca,'linewidth',2)
+plot(simOutTime,rad2deg(simOutValue(:,1) + simOutValue(:,5)),'LineWidth',1.5, 'color','r');
+title('λ')
+xlabel('Tempo [s]')
+ylabel('Ângulo [º]')
+axis tight
+ylim([min(rad2deg(simOutValue(:,1) + simOutValue(:,5))) - 5, max(rad2deg(simOutValue(:,1) + simOutValue(:,5))) + 5])
 
 
 
